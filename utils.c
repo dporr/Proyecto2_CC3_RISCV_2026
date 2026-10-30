@@ -15,7 +15,7 @@ int bitExtender(unsigned int field, unsigned int size) {
       imm = (int32_t)(field ^ mask) - mask;
       break;
     case 20:
-      mask = 0x8000 ; //1000 0000 0000 0000 0000
+      mask = 0x100000 ; //0001 0000 0000 0000 0000 0000
       imm = (int32_t)(field ^ mask) - mask;
       break;
     default:
@@ -37,10 +37,10 @@ int get_jump_distance(Instruction instruction) {
   //Yo crep que aca se calcula el imm del JAL...
   //BUG: Recalcular mascaras....
   int operando = instruction.jtype.imm;
-  operando = (operando >> 0x13 & 0x1) << 0x14 | //Agarro solo bit 20: quito 0x13(19) del principio, hago AND parara preservar 1 y lo regreso a la pos 20.
-  ((operando & 0x3FF) << 0x9|  //Agarro bits 1:10:  con mascara 0011 1111 1111
-  ((operando >> 0xA) & 0x1) << 0xB | //Agarro 11
-  ((operando >> 0xB) & 0xFF ) << 0XC);  //Agarro 19:12, corro 11 >, mascara  11111 11111 (solo 8 bits)
+  operando = (((operando >> 0x13) & 0x1) << 0x14 )| //Agarro solo bit 20: quito 0x13(19) del principio, hago AND parara preservar 1 y lo regreso a la pos 20.
+    ((operando >> 0x9) & 0x3FF) << 0x1|  //Agarro bits 1:10:  con mascara 0011 1111 1111
+    ((operando >> 0x8) & 0x1) << 0xB | //Agarro 11
+    ((operando & 0xFF) << 0xC);  //Agarro 19:12, corro 11 >, mascara  11111 11111 (solo 8 bits)
   return bitExtender(operando, 20);
 }
 
