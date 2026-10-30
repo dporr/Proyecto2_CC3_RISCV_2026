@@ -246,6 +246,14 @@ void write_itype_except_load(Instruction instruction) {
       instruction.itype.imm
       );
       break;
+      case 0x01:
+      printf(ITYPE_FORMAT,
+      "slli",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
+      break;
     default:
       handle_invalid_instruction(instruction);
       break;
