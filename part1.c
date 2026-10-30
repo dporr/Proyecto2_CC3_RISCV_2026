@@ -44,6 +44,8 @@ void decode_instruction(Instruction instruction) {
       break;
     case 0x03:
     case 0x73:
+      write_ecall(instruction);
+      break;
     case 0x67:
     //   do_I();
       break;
@@ -229,6 +231,20 @@ void write_itype_except_load(Instruction instruction) {
       );
       break;
     case 0x06:
+      printf(ITYPE_FORMAT,
+      "ori",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
+      break;
+    case 0x02:
+      printf(ITYPE_FORMAT,
+      "slti",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
       break;
     default:
       handle_invalid_instruction(instruction);
@@ -293,7 +309,7 @@ void write_jal(Instruction instruction) {
 
 
 void write_ecall(Instruction instruction) {
-  /* YOUR CODE HERE */
+  printf(ECALL_FORMAT);
 }
 
 
