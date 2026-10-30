@@ -215,16 +215,16 @@ void write_itype_except_load(Instruction instruction) {
   int func3 = instruction.itype.funct3;
   switch(func3) { // What do we switch on?
     case 0x0:
-     //BUG:
+     //BUG: -- Fixed con bitExtender
      // < 0000101c: addi	x8, x8, -1 (esperado)
      // > 0000101c: addi	x8, x8, 4095 (Mi output)
       printf(ITYPE_FORMAT,
       "addi",
       instruction.itype.rd,
       instruction.itype.rs1,
-      (int) instruction.itype.imm
+      bitExtender(instruction.itype.imm, 12)
       );
-      print_raw(instruction);
+      // print_raw(instruction);
       break;
     case 0x07:
       printf(ITYPE_FORMAT,

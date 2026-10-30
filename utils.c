@@ -6,8 +6,11 @@
 //sign extends a bitfield with given size
 /* You may find implementing this function helpful */
 int bitExtender(unsigned int field, unsigned int size) {
-  /* YOUR CODE HERE */
-  return 0;
+  //Creo que esto aplicaria para inmediatos y offsets, normalmente son de 12 bits
+  //TODO: Extender para fields que no sean de 12 bits
+  u_int32_t mask = 0x800; // 1000_0000_0000, por alguna razon el binario no funciona...
+  int imm = (int32_t)(field ^ mask) - mask;
+  return imm;
 }
 
 
