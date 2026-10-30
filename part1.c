@@ -52,6 +52,9 @@ void decode_instruction(Instruction instruction) {
     case 0x37:
       write_lui(instruction);
       break;
+    case 0x6F:
+      write_jal(instruction);
+      break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
       break;
@@ -332,7 +335,14 @@ void write_jalr(Instruction instruction) {
 
 
 void write_jal(Instruction instruction) {
-  /* YOUR CODE HERE */
+  printf(JAL_FORMAT,
+  instruction.jtype.rd,
+  //imm[20|10:1|11|19:12] rd opcode J-type
+  // se debe armar un operando por partes
+  // imm[20] + imm[10:1] + imm[11] + imm[19:12] = imm
+  //Fix: Aparentemente siempre hay un 0, imm[0] == 0...
+  get_jump_distance(instruction)
+  );
 }
 
 

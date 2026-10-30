@@ -9,7 +9,18 @@ int bitExtender(unsigned int field, unsigned int size) {
   //Creo que esto aplicaria para inmediatos y offsets, normalmente son de 12 bits
   //TODO: Extender para fields que no sean de 12 bits
   u_int32_t mask = 0x800; // 1000_0000_0000, por alguna razon el binario no funciona...
-  int imm = (int32_t)(field ^ mask) - mask;
+  int imm = 0;
+  switch(size){
+    case 12:
+      imm = (int32_t)(field ^ mask) - mask;
+      break;
+    case 20:
+      mask = 0x8000 ; //1000 0000 0000 0000 0000
+      imm = (int32_t)(field ^ mask) - mask;
+      break;
+    default:
+      break;
+  } 
   return imm;
 }
 
@@ -23,8 +34,14 @@ int get_branch_distance(Instruction instruction) {
 
 
 int get_jump_distance(Instruction instruction) {
-  /* YOUR CODE HERE */
-  return 0;
+  //Yo crep que aca se calcula el imm del JAL...
+  //BUG: Recalcular mascaras....
+  int operando = instruction.jtype.imm;
+  operando = (operando >> 0x13 & 0x1) << 0x14 | //Agarro solo bit 20: quito 0x13(19) del principio, hago AND parara preservar 1 y lo regreso a la pos 20.
+  ((operando & 0x3FF) << 0x9|  //Agarro bits 1:10:  con mascara 0011 1111 1111
+  ((operando >> 0xA) & 0x1) << 0xB | //Agarro 11
+  ((operando >> 0xB) & 0xFF ) << 0XC);  //Agarro 19:12, corro 11 >, mascara  11111 11111 (solo 8 bits)
+  return bitExtender(operando, 20);
 }
 
 /* Offset in BYTES */
