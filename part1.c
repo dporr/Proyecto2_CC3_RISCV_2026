@@ -46,8 +46,8 @@ void decode_instruction(Instruction instruction) {
     case 0x73:
       write_ecall(instruction);
       break;
-    case 0x67:
-    //   do_I();
+    case 0x63:
+      write_branch(instruction);
       break;
     case 0x37:
       write_lui(instruction);
@@ -215,6 +215,10 @@ void write_itype_except_load(Instruction instruction) {
   int func3 = instruction.itype.funct3;
   switch(func3) { // What do we switch on?
     case 0x0:
+     //BUG:
+     // < 0000101c: addi	x8, x8, -1 (esperado)
+     // > 0000101c: addi	x8, x8, 4095 (Mi output)
+
       printf(ITYPE_FORMAT,
       "addi",
       instruction.itype.rd,
@@ -282,8 +286,24 @@ void write_store(Instruction instruction) {
 
 
 void write_branch(Instruction instruction) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.btype.funct3;
+  switch(func3) { // What do we switch on?
+    case 0x0:
+    printf(BRANCH_FORMAT,
+      "beq",
+      instruction.btype.rs1,
+      instruction.btype.rs2,
+      //imm[12|10:5] rs2 rs1 funct3 imm[4:1|11] opcode B-type
+      //Aca debo calcular un offset entre imm7 e imm5
+      //Ref. https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/notebooks/RISCV/RISCV_GREEN_CARD.pdf
+      instruction.btype.imm5 
+      //Por ahora funciona, pero seguro esto va a ser un bug
+    );
+    break;
+
+    case 0x01:
+    break;
+    
     default:
       handle_invalid_instruction(instruction);
       break;
