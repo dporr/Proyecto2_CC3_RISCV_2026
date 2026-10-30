@@ -218,13 +218,13 @@ void write_itype_except_load(Instruction instruction) {
      //BUG:
      // < 0000101c: addi	x8, x8, -1 (esperado)
      // > 0000101c: addi	x8, x8, 4095 (Mi output)
-
       printf(ITYPE_FORMAT,
       "addi",
       instruction.itype.rd,
       instruction.itype.rs1,
-      instruction.itype.imm
+      (int) instruction.itype.imm
       );
+      print_raw(instruction);
       break;
     case 0x07:
       printf(ITYPE_FORMAT,

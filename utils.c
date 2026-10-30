@@ -48,3 +48,13 @@ void handle_invalid_write(Address address) {
   printf("Bad Write. Address: 0x%08x\n", address);
   exit(-1);
 }
+
+//Pretty print  el payload en Bin y Hexa
+void print_raw(Instruction instruction){
+  printf("b");
+  for (int i = 31; i >= 0; i--) {
+    putchar(((instruction.bits >> i) & 1) ? '1' : '0');
+    if (i == 16) putchar('_');
+  }
+  printf(" 0x%08x\n", instruction.bits);
+}
