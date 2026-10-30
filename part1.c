@@ -40,10 +40,15 @@ void decode_instruction(Instruction instruction) {
       write_rtype(instruction);
       break;
     case 0x13:
+      write_itype_except_load(instruction);
+      break;
     case 0x03:
     case 0x73:
     case 0x67:
     //   do_I();
+      break;
+    case 0x37:
+      write_lui(instruction);
       break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
@@ -205,8 +210,26 @@ void write_rtype(Instruction instruction) {
 
 
 void write_itype_except_load(Instruction instruction) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.itype.funct3;
+  switch(func3) { // What do we switch on?
+    case 0x0:
+      printf(ITYPE_FORMAT,
+      "addi",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
+      break;
+    case 0x07:
+      printf(ITYPE_FORMAT,
+      "andi",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
+      break;
+    case 0x06:
+      break;
     default:
       handle_invalid_instruction(instruction);
       break;
@@ -252,7 +275,10 @@ void write_auipc(Instruction instruction) {
 
 
 void write_lui(Instruction instruction) {
-  /* YOUR CODE HERE */
+  printf(LUI_FORMAT,
+  instruction.utype.rd,
+  instruction.utype.imm
+  );
 }
 
 
