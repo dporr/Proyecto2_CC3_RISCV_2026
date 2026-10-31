@@ -55,6 +55,9 @@ void decode_instruction(Instruction instruction) {
     case 0x6F:
       write_jal(instruction);
       break;
+    case 0x23:
+      write_store(instruction);
+      break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
       break;
@@ -279,8 +282,17 @@ void write_load(Instruction instruction) {
 
 
 void write_store(Instruction instruction) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.stype.funct3;
+  switch(func3) { // What do we switch on?
+    case 0x02:
+     
+      printf(MEM_FORMAT,
+        "sw",
+        instruction.stype.rs2,
+        get_memory_offset(instruction),
+        instruction.stype.rs1
+      );
+      break;
     default:
       handle_invalid_instruction(instruction);
       break;

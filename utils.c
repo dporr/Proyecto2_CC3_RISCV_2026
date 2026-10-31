@@ -47,10 +47,14 @@ int get_jump_distance(Instruction instruction) {
 /* Offset in BYTES */
 /* Used both in load and store */
 
-int get_memory_offset(Instruction instruction) {
-  /* YOUR CODE HERE */
-  return 0;
-}
+  int get_memory_offset(Instruction instruction) {
+    int upper = instruction.stype.imm7;
+    int lower = instruction.stype.imm5;
+    upper &= 0x7F; //mascara 0111 1111 0x7F
+    upper <<=  5;
+    lower &= 0x1F; //mascara 0001 1111 0x1F
+    return bitExtender(upper|lower, 12);
+  }
 
 
 void handle_invalid_instruction(Instruction instruction) {
