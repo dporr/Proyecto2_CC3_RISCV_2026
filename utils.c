@@ -8,29 +8,37 @@
 int bitExtender(unsigned int field, unsigned int size) {
   //Creo que esto aplicaria para inmediatos y offsets, normalmente son de 12 bits
   //TODO: Extender para fields que no sean de 12 bits
-  u_int32_t mask = 0x800; // 1000_0000_0000, por alguna razon el binario no funciona...
+  u_int32_t mask = 0; // 1000_0000_0000, por alguna razon el binario no funciona...
   int imm = 0;
   switch(size){
     case 5:
       mask = 0x10;//mascara 1_0000 0x10
-      imm = (int32_t)(field ^ mask) - mask;
       break;
     case 12:
-      imm = (int32_t)(field ^ mask) - mask;
+      mask = 0x800; // 1000_0000_0000, por alguna razon el binario no funciona...
       break;
     //TODO: Por qué unos fiels se extienden bien con 12 y otros con 13?
     //en teoria si el field es de 12, no deberia ser 12 el signo siempre?
     case 13:
       mask = 0x1000; //1 0000 0000 0000  bit 13 es signo;
-      imm = (int32_t)(field ^ mask) - mask;
       break;
     case 21:
       mask = 0x100000 ; //0001 0000 0000 0000 0000 0000
-      imm = (int32_t)(field ^ mask) - mask;
+      break;
+    //Sign extension para operandos que van a registros Byte, half, word.
+    case 8:
+      mask = 0x80; // 1000_0000 0x80, por alguna razon el binario no funciona...
+      break;
+    case 16:
+      mask = 0x8000; // 1000_0000_0000_0000 0x8000, por alguna razon el binario no funciona...
+      break;
+    case 32:
+      mask = 0x80000000; // 1000_0000_0000_0000_0000_0000_0000_0000 0x80000000, por alguna razon el binario no funciona...
       break;
     default:
       break;
   } 
+  imm = (int32_t)(field ^ mask) - mask;
   return imm;
 }
 

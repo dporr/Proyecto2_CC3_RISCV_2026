@@ -55,6 +55,7 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
       execute_jalr(instruction, processor);
       break;
     default: // undefined opcode
+      // printf("PC at: %.8x\n", processor->PC);
       handle_invalid_instruction(instruction);
       exit(1);
       break;
@@ -182,7 +183,7 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
   int func3 = instruction.itype.funct3;
   int rd = instruction.itype.rd;
   int rs1 = instruction.itype.rs1;
-  int imm = instruction.itype.imm;
+  int imm = bitExtender(instruction.itype.imm, 12); //Hay que hacer sing extension a los inmediatos...
   switch(func3) { // What do we switch on?
     case 0x0: //addi
       //R[rd]<- R[rs1] + imm 
@@ -266,8 +267,10 @@ void execute_ecall(Processor *p, Byte *memory) {
   switch(ecall_n) { // What do we switch on?
     case 1: //ecall write
       printf("%d",arg1); 
+      break;
     case 10: //ecall exit
       exit(arg1);
+      break;
     default: // undefined ecall
       printf("Illegal ecall number %d\n", ecall_n); // What stores the ecall arg?
       exit(-1);
@@ -304,22 +307,63 @@ void execute_branch(Instruction instruction, Processor *processor) {
 
 
 void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
-      handle_invalid_instruction(instruction);
-    printf("Not impl load\n");
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+ int func3 = instruction.itype.funct3;
+  int rd = instruction.itype.rd;
+  int rs1 = instruction.itype.rs1;
+  int offset = get_memory_offset(instruction);
+  switch(func3) { // What do we switch on?
+    case 0x0: //lb
+      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
+      processor->R[rd] =  (Byte) bitExtender(
+        memory[processor->R[rs1] + offset], 8 
+      );
+      break;
+    case 0x1: //lh
+      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
+      processor->R[rd] =  (Half) bitExtender(
+        memory[processor->R[rs1] + offset], 16 
+      );
+      break;
+    case 0x2: //lw
+      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
+      processor->R[rd] =  (Word) bitExtender(
+        memory[processor->R[rs1] + offset], 32 
+      );
+      break;
+      break;
     default:
       handle_invalid_instruction(instruction);
+      exit(-1);
       break;
   }
 }
 
 
 void execute_store(Instruction instruction, Processor *processor, Byte *memory) {
-      handle_invalid_instruction(instruction);
-    printf("Not impl store\n");
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.stype.funct3;
+  int rs1 = instruction.stype.rs1;
+  int rs2 = instruction.stype.rs2;
+  int offset = get_memory_offset(instruction);
+  switch(func3) { // What do we switch on?
+    case 0x0: //sb
+      // Mem(R[rs1] + offset)<- R[rs2][7:0]
+      memory[
+        processor->R[rs1] + offset
+      ] =  (Byte) (processor->R[rs2] & 0xFF);
+      break;
+    case 0x1: //sh
+      //Mem(R[rs1] + offset)<- R[rs2][15:0]
+      memory[
+        processor->R[rs1] + offset
+      ] =  (Half) (processor->R[rs2] & 0xFFFF);
+      break;
+      break;
+    case 0x2: //sw
+      //Mem(R[rs1] + offset)<- R[rs2]
+      memory[
+        processor->R[rs1] + offset
+      ] =  (Word) (processor->R[rs2] & 0xFFFFFFFF);
+      break;
     default:
       handle_invalid_instruction(instruction);
       exit(-1);
@@ -382,7 +426,10 @@ void store(Byte *memory, Address address, Alignment alignment, Word value, int c
   if ((check_align && !check(address,alignment)) || (address >= MEMORY_SPACE)) {
     handle_invalid_write(address);
   }
-  /* YOUR CODE HERE */
+  memory[address] = (Byte) ((value & 0xFF000000) >> 0x18);
+  memory[address+1] = (Byte) ((value & 0xFF0000) >> 0x10);
+  memory[address+2] = (Byte) ((value & 0xFF00) >> 0x8);;
+  memory[address+3] = (Byte) ((value & 0xFF));;
 }
 
 /** 
