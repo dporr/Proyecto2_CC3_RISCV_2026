@@ -19,8 +19,8 @@ void execute_lui(Instruction, Processor *);
 
 
 void execute_instruction(Instruction instruction,Processor *processor,Byte *memory) {
-  printf("Me pasaron: %.8x\n que decofica: ", instruction.bits);
-  decode_instruction(instruction);
+  // printf("Me pasaron: %.8x\n que decofica: ", instruction.bits);
+  // decode_instruction(instruction);
   // exit(666);
   int opcode = instruction.opcode;
   switch(opcode) { // What do we switch on?
@@ -39,7 +39,7 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
     case 0x63: //beq, bne
       execute_branch(instruction, processor);
       break;
-    case 0x37:
+    case 0x37: //lui
       execute_lui(instruction, processor);
       break;
     case 0x6F:
@@ -125,11 +125,9 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 );
                 break;
             case 0x01:
-                printf(RTYPE_FORMAT, "div",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                 );
+                //R[rd]<-R[rs1] / R[rs2]
+                if(processor->R[rs2] == 0) handle_invalid_instruction(instruction); //No dividimos por cero
+                processor->R[rd] = processor->R[rs1] / processor->R[rs2];
                 break;
         }
         break;
@@ -170,11 +168,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         }
         break;
     case 0x7: //and
-        printf(RTYPE_FORMAT, "and",
-            instruction.rtype.rd,
-            instruction.rtype.rs1,
-            instruction.rtype.rs2
-        );
+        //R[rd]<-R[rs1] & R[rs2]
+        processor->R[rd] = processor->R[rs1] & processor->R[rs2]; 
         break;
     default:
       handle_invalid_instruction(instruction);
@@ -313,6 +308,8 @@ void execute_branch(Instruction instruction, Processor *processor) {
 
 
 void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
+      handle_invalid_instruction(instruction);
+    printf("Not impl load");
   switch(0) { // What do we switch on?
     /* YOUR CODE HERE */
     default:
@@ -323,6 +320,8 @@ void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
 
 
 void execute_store(Instruction instruction, Processor *processor, Byte *memory) {
+      handle_invalid_instruction(instruction);
+    printf("Not impl store");
   switch(0) { // What do we switch on?
     /* YOUR CODE HERE */
     default:
@@ -334,22 +333,29 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
 
 
 void execute_jalr(Instruction instruction, Processor *processor) {
-  /* YOUR CODE HERE */
+     handle_invalid_instruction(instruction);
+    printf("Not impl jalr");
 }
 
 
 void execute_jal(Instruction instruction, Processor *processor) {
-  /* YOUR CODE HERE */
+    handle_invalid_instruction(instruction);
+    printf("Not impl jal");
 }
 
 
 void execute_auipc(Instruction instruction, Processor *processor) {
-  /* YOUR CODE HERE */
+      handle_invalid_instruction(instruction);
+    printf("Not impl aupic");
 }
 
 
 void execute_lui(Instruction instruction, Processor *processor) {
-  /* YOUR CODE HERE */
+  //R[rd]<- {offset, 12b'0} 
+  //rd = imm << 12
+  int rd = instruction.utype.rd;
+  int imm = instruction.utype.imm;
+  processor->R[rd] = imm << 12;
 }
 
 
