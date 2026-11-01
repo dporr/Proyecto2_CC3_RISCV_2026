@@ -19,12 +19,41 @@ void execute_lui(Instruction, Processor *);
 
 
 void execute_instruction(Instruction instruction,Processor *processor,Byte *memory) {
-  /* YOUR CODE HERE: COMPLETE THE SWITCH STATEMENTS */
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int opcode = instruction.opcode;
+  switch(opcode) { // What do we switch on?
+    case 0x33:
+      execute_rtype(instruction);
+      break;
+    case 0x13:
+      execute_itype_except_load(instruction);
+      break;
+    case 0x03:
+      execute_load(instruction);
+      break;
+    case 0x73:
+      execute_ecall(instruction);
+      break;
+    case 0x63:
+      execute_branch(instruction);
+      break;
+    case 0x37:
+      execute_lui(instruction);
+      break;
+    case 0x6F:
+      execute_jal(instruction);
+      break;
+    case 0x23:
+      execute_store(instruction);
+      break;
+    case 0x17:
+      execute_auipc(instruction);
+      break;
+    case 0x67:
+      execute_jalr(instruction);
+      break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
-      exit(-1);
+      exit(1);
       break;
   }
 }
