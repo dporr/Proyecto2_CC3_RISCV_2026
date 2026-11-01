@@ -206,7 +206,7 @@ void write_rtype(Instruction instruction) {
         }
         break;
     case 0x7:
-        printf(RTYPE_FORMAT, "and`",
+        printf(RTYPE_FORMAT, "and",
             instruction.rtype.rd,
             instruction.rtype.rs1,
             instruction.rtype.rs2
