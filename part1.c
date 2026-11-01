@@ -43,6 +43,8 @@ void decode_instruction(Instruction instruction) {
       write_itype_except_load(instruction);
       break;
     case 0x03:
+      write_load(instruction);
+      break;
     case 0x73:
       write_ecall(instruction);
       break;
@@ -272,8 +274,16 @@ void write_itype_except_load(Instruction instruction) {
 
 
 void write_load(Instruction instruction) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.itype.funct3;
+  switch(func3) { // What do we switch on?
+    case 0x2:
+      printf(MEM_FORMAT,
+      "lw",
+      instruction.itype.rd,
+      bitExtender(instruction.itype.imm, 12),
+      instruction.itype.rs1
+      );
+      break;
     default:
       handle_invalid_instruction(instruction);
       break;
@@ -285,7 +295,6 @@ void write_store(Instruction instruction) {
   int func3 = instruction.stype.funct3;
   switch(func3) { // What do we switch on?
     case 0x02:
-     
       printf(MEM_FORMAT,
         "sw",
         instruction.stype.rs2,
@@ -311,14 +320,18 @@ void write_branch(Instruction instruction) {
       //imm[12|10:5] rs2 rs1 funct3 imm[4:1|11] opcode B-type
       //Aca debo calcular un offset entre imm7 e imm5
       //Ref. https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/notebooks/RISCV/RISCV_GREEN_CARD.pdf
-      instruction.btype.imm5 
+      get_memory_offset(instruction) 
       //Por ahora funciona, pero seguro esto va a ser un bug
     );
     break;
-
     case 0x01:
-    break;
-    
+      printf(BRANCH_FORMAT,
+      "bne",
+      instruction.btype.rs1,
+      instruction.btype.rs2,
+      get_memory_offset(instruction)
+    );
+     break;
     default:
       handle_invalid_instruction(instruction);
       break;
