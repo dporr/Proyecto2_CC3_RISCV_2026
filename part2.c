@@ -188,13 +188,9 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
       //R[rd]<- R[rs1] + imm 
       processor->R[rd] = processor->R[rs1] + imm;
       break;
-    case 0x07:
-      printf(ITYPE_FORMAT,
-      "andi",
-      instruction.itype.rd,
-      instruction.itype.rs1,
-      bitExtender(instruction.itype.imm,12)
-      );
+    case 0x07: //andi
+    //R[rd]<- R[rs1] & imm
+      processor->R[rd] = processor->R[rs1] & imm;
       break;
     case 0x06:
       printf(ITYPE_FORMAT,
@@ -309,7 +305,7 @@ void execute_branch(Instruction instruction, Processor *processor) {
 
 void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
       handle_invalid_instruction(instruction);
-    printf("Not impl load");
+    printf("Not impl load\n");
   switch(0) { // What do we switch on?
     /* YOUR CODE HERE */
     default:
@@ -321,7 +317,7 @@ void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
 
 void execute_store(Instruction instruction, Processor *processor, Byte *memory) {
       handle_invalid_instruction(instruction);
-    printf("Not impl store");
+    printf("Not impl store\n");
   switch(0) { // What do we switch on?
     /* YOUR CODE HERE */
     default:
@@ -333,20 +329,29 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
 
 
 void execute_jalr(Instruction instruction, Processor *processor) {
-     handle_invalid_instruction(instruction);
-    printf("Not impl jalr");
+    int rd = instruction.itype.rd;
+    int imm = instruction.itype.imm;
+    int rs1 = instruction.itype.rs1;
+    //1. R[rd]<- PC + 4
+    processor->R[rd] = processor->PC + 4;
+    //2. PC<- R[rs1] + imm
+    processor->PC = processor->R[rs1] + imm;
+
 }
 
 
 void execute_jal(Instruction instruction, Processor *processor) {
     handle_invalid_instruction(instruction);
-    printf("Not impl jal");
+    printf("Not impl jal\n");
 }
 
 
 void execute_auipc(Instruction instruction, Processor *processor) {
-      handle_invalid_instruction(instruction);
-    printf("Not impl aupic");
+    //R[rd]<- PC + {offset, 12b'0} Esto se parece mucho a lui
+    //rd = PC + (imm << 12)
+    int rd = instruction.utype.rd;
+    int imm = instruction.utype.imm;
+    processor->R[rd] = processor->PC + (imm << 12);
 }
 
 
