@@ -19,6 +19,9 @@ void execute_lui(Instruction, Processor *);
 
 
 void execute_instruction(Instruction instruction,Processor *processor,Byte *memory) {
+  // printf("Me pasaron: %.8x\n que decofica: ", instruction.bits);
+  decode_instruction(instruction);
+  // exit(666);
   int opcode = instruction.opcode;
   switch(opcode) { // What do we switch on?
     case 0x33:
@@ -33,7 +36,7 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
     case 0x73:
       execute_ecall(processor, memory);
       break;
-    case 0x63:
+    case 0x63: //beq, bne
       execute_branch(instruction, processor);
       break;
     case 0x37:
@@ -56,6 +59,7 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
       exit(1);
       break;
   }
+  processor->PC = processor->PC + 4; //Incremento PC Siempre/solo cuando logré ejecutar
 }
 
 
@@ -83,6 +87,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         //Termino switch nesteado para Rtype
        
        default:
+        handle_invalid_instruction(instruction);
+        exit(-1);
         break;
        }
         break;
@@ -178,12 +184,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
 
 
 void execute_itype_except_load(Instruction instruction, Processor *processor) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
-    default:
-        handle_invalid_instruction(instruction);
-        break;
-  }
+  exit(1);
+  //TBD
 }
 
 
@@ -201,8 +203,11 @@ void execute_ecall(Processor *p, Byte *memory) {
 void execute_branch(Instruction instruction, Processor *processor) {
   /* Remember that the immediate portion of branches
      is counting half-words, so make sure to account for that. */
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.btype.funct3;
+  switch(func3) { // What do we switch on?
+    case 0x0:
+      //if(R[rs1] == R[rs2]) PC<- PC + {offset, 1b'0}
+    break;
     default:
       handle_invalid_instruction(instruction);
       exit(-1);
@@ -273,11 +278,16 @@ void store(Byte *memory, Address address, Alignment alignment, Word value, int c
   /* YOUR CODE HERE */
 }
 
-
+/** 
+ * Notas: La memoria ya se creo en riscv.c
+**/
 Word load(Byte *memory, Address address, Alignment alignment, int check_align) {
   if ((check_align && !check(address,alignment)) || (address >= MEMORY_SPACE)) {
     handle_invalid_read(address);
   }
-  /* YOUR CODE HERE */
-  return 0;
+  //Aca estoy haciendo un fetch, entonces solo deberia retornar un word desde PC
+  //PC ya me lo mandan en risc.v en esta linea   instruction.bits = load(memory, processor->PC, LENGTH_WORD, 1);
+  // printf("Contents of memory 0x%.8x at  address 0x%.8x\n", memory[address], address);
+  // exit(0);
+  return memory[address];
 }

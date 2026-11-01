@@ -98,12 +98,13 @@ void write_rtype(Instruction instruction) {
         //Feo switch nesteado xD
        switch (func7) {
         case 0x0:
-            // printf("ACA imprimo: \n");
+            // printf("Me pasaron un ADD: %.8x", instruction.bits);
             printf(RTYPE_FORMAT, "add",
             instruction.rtype.rd,
             instruction.rtype.rs1,
             instruction.rtype.rs2
             );
+            // exit(-1);
         break;
         case 0x01:
             printf(RTYPE_FORMAT, "mul",
