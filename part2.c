@@ -62,32 +62,23 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
 void execute_rtype(Instruction instruction, Processor *processor) {
   int func3 = instruction.rtype.funct3;
   int func7 = instruction.rtype.funct7;
+  int rd = instruction.rtype.rd;
+  int rs1 = instruction.rtype.rs1;
+  int rs2 = instruction.rtype.rs2;
   switch(func3) { 
     case 0x0: // add, mul, sub
         //Feo switch nesteado xD
        switch (func7) {
         case 0x0: //add
-            // printf("ACA imprimo: \n");
-            printf(RTYPE_FORMAT, "add",
-            instruction.rtype.rd,
-            instruction.rtype.rs1,
-            instruction.rtype.rs2
-            );
+            //R[rd]<-R[rs1] + R[rs2]
+            processor->R[rd] = processor->R[rs1] + processor->R[rs2];
         break;
         case 0x01: //mul
-            printf(RTYPE_FORMAT, "mul",
-            instruction.rtype.rd,
-            instruction.rtype.rs1,
-            instruction.rtype.rs2
-        );
-            break;
+            //R[rd]<-(R[rs1] * R[rs2]) [31:0]
+            processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) & 0xFFFFFFFF; // Potencial BUG: hay que hacer bit extension?
         case 0x20: //sub
-            // printf("Aca imprimo\n");
-            printf(RTYPE_FORMAT, "sub",
-            instruction.rtype.rd,
-            instruction.rtype.rs1,
-            instruction.rtype.rs2
-        );
+            //R[rd]<-R[rs1] - R[rs2]
+            processor->R[rd] = processor->R[rs1] - processor->R[rs2];
             break;
         //Termino switch nesteado para Rtype
        
@@ -98,19 +89,13 @@ void execute_rtype(Instruction instruction, Processor *processor) {
     case 0x1: //sll, mulh
         switch(func7) {
             case 0x0: //sll
-                printf(RTYPE_FORMAT, "sll",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                );
-                break;
+              //R[rd]<-R[rs1] << R[rs2]
+              processor->R[rd] = processor->R[rs1] << processor->R[rs2];
+              break;
             case 0x01: //mulh
-                printf(RTYPE_FORMAT, "mulh",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                 );
-                break;
+              processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) >> 0x20; //Descarto los primeros 32 bits;
+              //R[rd]<-(R[rs1] * R[rs2]) [63:32]
+              break;
         }
         break;
     case 0x2: //slt
