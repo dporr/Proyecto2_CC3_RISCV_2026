@@ -19,7 +19,7 @@ void execute_lui(Instruction, Processor *);
 
 
 void execute_instruction(Instruction instruction,Processor *processor,Byte *memory) {
-  // printf("Me pasaron: %.8x\n que decofica: ", instruction.bits);
+  printf("Me pasaron: %.8x\n que decofica: ", instruction.bits);
   decode_instruction(instruction);
   // exit(666);
   int opcode = instruction.opcode;
@@ -270,10 +270,15 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
 
 
 void execute_ecall(Processor *p, Byte *memory) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int ecall_n = p->R[10]; //a0=x10 holds ecall number
+  int arg1 = p->R[11]; //a1=x11 Es el primer argumento de la syscall
+  switch(ecall_n) { // What do we switch on?
+    case 1: //ecall write
+      printf("%d",arg1); 
+    case 10: //ecall exit
+      exit(arg1);
     default: // undefined ecall
-      printf("Illegal ecall number %d\n", -1); // What stores the ecall arg?
+      printf("Illegal ecall number %d\n", ecall_n); // What stores the ecall arg?
       exit(-1);
       break;
   }
