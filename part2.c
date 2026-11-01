@@ -225,15 +225,9 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
         imm &= 0x7F; //Mascara 0111 1111
         switch (imm)
         {
-        case 0x00:
-          printf(ITYPE_FORMAT,
-          "srli",
-          instruction.itype.rd,
-          instruction.itype.rs1,
-          // bitExtender(instruction.itype.imm & 0x1F, 5) //mascara 0001_1111
-          //Sin sing extension
-          instruction.itype.imm & 0x1F
-          );
+        case 0x00: //srli
+          processor->R[rd] = 
+          processor->R[rs1] >>  (instruction.itype.imm & 0x1F);
           break;
         case 0x20: //srai
           //R[rd]<- R[rs1] >> imm 
