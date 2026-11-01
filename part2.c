@@ -22,34 +22,34 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
   int opcode = instruction.opcode;
   switch(opcode) { // What do we switch on?
     case 0x33:
-      execute_rtype(instruction);
+      execute_rtype(instruction, &processor);
       break;
     case 0x13:
-      execute_itype_except_load(instruction);
+      execute_itype_except_load(instruction, &processor);
       break;
     case 0x03:
-      execute_load(instruction);
+      execute_load(instruction, &processor, &memory);
       break;
     case 0x73:
-      execute_ecall(instruction);
+      execute_ecall(&processor, &memory);
       break;
     case 0x63:
-      execute_branch(instruction);
+      execute_branch(instruction, &processor);
       break;
     case 0x37:
-      execute_lui(instruction);
+      execute_lui(instruction, &processor);
       break;
     case 0x6F:
-      execute_jal(instruction);
+      execute_jal(instruction, &processor);
       break;
     case 0x23:
-      execute_store(instruction);
+      execute_store(instruction, &processor, &memory);
       break;
     case 0x17:
-      execute_auipc(instruction);
+      execute_auipc(instruction, &processor);
       break;
     case 0x67:
-      execute_jalr(instruction);
+      execute_jalr(instruction, &processor);
       break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
@@ -63,10 +63,10 @@ void execute_rtype(Instruction instruction, Processor *processor) {
   int func3 = instruction.rtype.funct3;
   int func7 = instruction.rtype.funct7;
   switch(func3) { 
-    case 0x0:
+    case 0x0: // add, mul, sub
         //Feo switch nesteado xD
        switch (func7) {
-        case 0x0:
+        case 0x0: //add
             // printf("ACA imprimo: \n");
             printf(RTYPE_FORMAT, "add",
             instruction.rtype.rd,
@@ -74,14 +74,14 @@ void execute_rtype(Instruction instruction, Processor *processor) {
             instruction.rtype.rs2
             );
         break;
-        case 0x01:
+        case 0x01: //mul
             printf(RTYPE_FORMAT, "mul",
             instruction.rtype.rd,
             instruction.rtype.rs1,
             instruction.rtype.rs2
         );
             break;
-        case 0x20:
+        case 0x20: //sub
             // printf("Aca imprimo\n");
             printf(RTYPE_FORMAT, "sub",
             instruction.rtype.rd,
@@ -89,22 +89,22 @@ void execute_rtype(Instruction instruction, Processor *processor) {
             instruction.rtype.rs2
         );
             break;
-        //Termini swithc nesteado para Rtype
+        //Termino switch nesteado para Rtype
        
        default:
         break;
        }
         break;
-    case 0x1:
+    case 0x1: //sll, mulh
         switch(func7) {
-            case 0x0:
+            case 0x0: //sll
                 printf(RTYPE_FORMAT, "sll",
                 instruction.rtype.rd,
                 instruction.rtype.rs1,
                 instruction.rtype.rs2
                 );
                 break;
-            case 0x01:
+            case 0x01: //mulh
                 printf(RTYPE_FORMAT, "mulh",
                 instruction.rtype.rd,
                 instruction.rtype.rs1,
@@ -113,18 +113,18 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 break;
         }
         break;
-    case 0x2:
+    case 0x2: //slt
         printf(RTYPE_FORMAT, "slt",
             instruction.rtype.rd,
             instruction.rtype.rs1,
             instruction.rtype.rs2
             );
         break;
-    case 0x3:
-        //Creo que este  func3 no existe.
-        handle_invalid_instruction(instruction);
-        break;
-    case 0x4:
+    // case 0x3: 
+    //     //Creo que este  func3 no existe.
+    //     handle_invalid_instruction(instruction);
+    //     break;
+    case 0x4: //xor, div
         switch(func7) {
             case 0x0:
                 printf(RTYPE_FORMAT, "xor",
@@ -142,7 +142,7 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 break;
         }
         break;
-    case 0x5:
+    case 0x5: //srl, sra
         switch(func7) {
             case 0x0:
                 printf(RTYPE_FORMAT, "srl",
@@ -160,7 +160,7 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 break;
         }
         break;
-    case 0x6:
+    case 0x6: //or, rem
         switch(func7) {
             case 0x0:
                 printf(RTYPE_FORMAT, "or",
@@ -178,7 +178,7 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 break;
         }
         break;
-    case 0x7:
+    case 0x7: //and
         printf(RTYPE_FORMAT, "and",
             instruction.rtype.rd,
             instruction.rtype.rs1,
