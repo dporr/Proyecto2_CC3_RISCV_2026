@@ -60,11 +60,133 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
 
 
 void execute_rtype(Instruction instruction, Processor *processor) {
-  switch(0) { // What do we switch on?
-    /* YOUR CODE HERE */
+  int func3 = instruction.rtype.funct3;
+  int func7 = instruction.rtype.funct7;
+  switch(func3) { 
+    case 0x0:
+        //Feo switch nesteado xD
+       switch (func7) {
+        case 0x0:
+            // printf("ACA imprimo: \n");
+            printf(RTYPE_FORMAT, "add",
+            instruction.rtype.rd,
+            instruction.rtype.rs1,
+            instruction.rtype.rs2
+            );
+        break;
+        case 0x01:
+            printf(RTYPE_FORMAT, "mul",
+            instruction.rtype.rd,
+            instruction.rtype.rs1,
+            instruction.rtype.rs2
+        );
+            break;
+        case 0x20:
+            // printf("Aca imprimo\n");
+            printf(RTYPE_FORMAT, "sub",
+            instruction.rtype.rd,
+            instruction.rtype.rs1,
+            instruction.rtype.rs2
+        );
+            break;
+        //Termini swithc nesteado para Rtype
+       
+       default:
+        break;
+       }
+        break;
+    case 0x1:
+        switch(func7) {
+            case 0x0:
+                printf(RTYPE_FORMAT, "sll",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                );
+                break;
+            case 0x01:
+                printf(RTYPE_FORMAT, "mulh",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                 );
+                break;
+        }
+        break;
+    case 0x2:
+        printf(RTYPE_FORMAT, "slt",
+            instruction.rtype.rd,
+            instruction.rtype.rs1,
+            instruction.rtype.rs2
+            );
+        break;
+    case 0x3:
+        //Creo que este  func3 no existe.
+        handle_invalid_instruction(instruction);
+        break;
+    case 0x4:
+        switch(func7) {
+            case 0x0:
+                printf(RTYPE_FORMAT, "xor",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                );
+                break;
+            case 0x01:
+                printf(RTYPE_FORMAT, "div",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                 );
+                break;
+        }
+        break;
+    case 0x5:
+        switch(func7) {
+            case 0x0:
+                printf(RTYPE_FORMAT, "srl",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                );
+                break;
+            case 0x20:
+                printf(RTYPE_FORMAT, "sra",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                 );
+                break;
+        }
+        break;
+    case 0x6:
+        switch(func7) {
+            case 0x0:
+                printf(RTYPE_FORMAT, "or",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                );
+                break;
+            case 0x01:
+                printf(RTYPE_FORMAT, "rem",
+                instruction.rtype.rd,
+                instruction.rtype.rs1,
+                instruction.rtype.rs2
+                 );
+                break;
+        }
+        break;
+    case 0x7:
+        printf(RTYPE_FORMAT, "and",
+            instruction.rtype.rd,
+            instruction.rtype.rs1,
+            instruction.rtype.rs2
+        );
+        break;
     default:
       handle_invalid_instruction(instruction);
-      exit(-1);
       break;
   }
 }
