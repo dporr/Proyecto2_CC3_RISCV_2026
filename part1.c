@@ -271,7 +271,7 @@ void write_itype_except_load(Instruction instruction) {
         "xori",
         instruction.itype.rd,
         instruction.itype.rs1,
-        instruction.itype.imm
+        bitExtender(instruction.itype.imm, 12)
         );
         break;
       case 0x5:

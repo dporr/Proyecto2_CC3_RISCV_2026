@@ -18,7 +18,13 @@ int bitExtender(unsigned int field, unsigned int size) {
     case 12:
       imm = (int32_t)(field ^ mask) - mask;
       break;
-    case 20:
+    //TODO: Por qué unos fiels se extienden bien con 12 y otros con 13?
+    //en teoria si el field es de 12, no deberia ser 12 el signo siempre?
+    case 13:
+      mask = 0x1000; //1 0000 0000 0000  bit 13 es signo;
+      imm = (int32_t)(field ^ mask) - mask;
+      break;
+    case 21:
       mask = 0x100000 ; //0001 0000 0000 0000 0000 0000
       imm = (int32_t)(field ^ mask) - mask;
       break;
@@ -45,7 +51,7 @@ int get_jump_distance(Instruction instruction) {
     ((operando >> 0x9) & 0x3FF) << 0x1|  //Agarro bits 1:10:  con mascara 0011 1111 1111
     ((operando >> 0x8) & 0x1) << 0xB | //Agarro 11
     ((operando & 0xFF) << 0xC);  //Agarro 19:12, corro 11 >, mascara  11111 11111 (solo 8 bits)
-  return bitExtender(operando, 20);
+  return bitExtender(operando, 21);
 }
 
 /* Offset in BYTES */
@@ -54,10 +60,25 @@ int get_jump_distance(Instruction instruction) {
   int get_memory_offset(Instruction instruction) {
     int upper = instruction.stype.imm7;
     int lower = instruction.stype.imm5;
-    upper &= 0x7F; //mascara 0111 1111 0x7F
-    upper <<=  5;
-    lower &= 0x1F; //mascara 0001 1111 0x1F
-    return bitExtender(upper|lower, 12);
+    switch(instruction.stype.opcode){
+      case 0x23:
+        //Esto sirve para los s-type, pero no para los b-type
+        upper &= 0x7F; //mascara 0111 1111 0x7F
+        upper <<=  5;
+        lower &= 0x1F; //mascara 0001 1111 0x1F
+        return bitExtender(upper|lower, 12);
+        break;
+      case 0x63:
+        int result = 0; //r_X para indicar posiciones dentro de r, que es el offset calculado
+        //imm[12|10:5] imm[4:1|11] opcode B-type
+        result = ((upper >> 0x6) & 0x1) << 0xC;// Saco bit imm7_7, colooc pos r_12
+        result |= (upper & 0x3F) << 0x5;  // Saco bits imm_0-6 0011 1111, muevo a pos r_5 para llenar hasta r_11
+        result |= (lower & 0x1E); // Saco bits imm5_1-4 0001 1110 0x1E, muevo a pos r_1 hasta r_r4
+        result |= (lower & 0x1) << 0xB; //saco imm5_0 coloco r_11
+        return bitExtender(result, 13);
+        break;  
+    }
+    return -1;
   }
 
 
