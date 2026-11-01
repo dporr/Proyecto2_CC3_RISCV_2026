@@ -266,6 +266,14 @@ void write_itype_except_load(Instruction instruction) {
       instruction.itype.imm
       );
       break;
+      case 0x4:
+      printf(ITYPE_FORMAT,
+        "xori",
+        instruction.itype.rd,
+        instruction.itype.rs1,
+        instruction.itype.imm
+        );
+        break;
     default:
       handle_invalid_instruction(instruction);
       break;
@@ -294,6 +302,22 @@ void write_load(Instruction instruction) {
 void write_store(Instruction instruction) {
   int func3 = instruction.stype.funct3;
   switch(func3) { // What do we switch on?
+    case 0x0:
+        printf(MEM_FORMAT,
+        "sb",
+        instruction.stype.rs2,
+        get_memory_offset(instruction),
+        instruction.stype.rs1
+      );
+      break;
+    case 0x1:
+      printf(MEM_FORMAT,
+        "sh",
+        instruction.stype.rs2,
+        get_memory_offset(instruction),
+        instruction.stype.rs1
+      );
+      break;
     case 0x02:
       printf(MEM_FORMAT,
         "sw",
