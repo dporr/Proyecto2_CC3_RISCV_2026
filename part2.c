@@ -119,11 +119,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
     case 0x4: //xor, div
         switch(func7) {
             case 0x0:
-                printf(RTYPE_FORMAT, "xor",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                );
+                // R[rd]<-R[rs1] ^ R[rs2]
+                processor->R[rd] = (processor->R[rs1] ^ processor->R[rs2]);
                 break;
             case 0x01:
                 //R[rd]<-R[rs1] / R[rs2]
