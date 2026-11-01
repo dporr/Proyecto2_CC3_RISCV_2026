@@ -115,3 +115,21 @@ void print_raw(Instruction instruction){
   }
   printf(" 0x%08x\n", instruction.bits);
 }
+
+void print_mem(char* op, Byte* memory, Processor* processor, Instruction instruction){
+    int rs1 = instruction.stype.rs1;
+    int rs2 = instruction.stype.rs2;
+    int offset = get_memory_offset(instruction);
+    printf("After %s: %.2x%.2x%.2x%.2x Intennded %.8x\n",
+      op,
+       memory[
+        processor->R[rs1] + offset + 3],
+        memory[
+        processor->R[rs1] + offset + 2],
+        memory[
+        processor->R[rs1] + offset + 1],
+        memory[
+        processor->R[rs1] + offset ],
+        processor->R[rs2]
+      );
+}

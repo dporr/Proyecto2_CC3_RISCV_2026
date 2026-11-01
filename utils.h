@@ -21,4 +21,5 @@ void handle_invalid_instruction(Instruction);
 void handle_invalid_read(Address);
 void handle_invalid_write(Address);
 void print_raw(Instruction);
+void print_mem(char* op, Byte* memory, Processor* processor, Instruction instruction);
 #endif

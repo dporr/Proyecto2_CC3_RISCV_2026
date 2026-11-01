@@ -327,10 +327,7 @@ void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
       break;
     case 0x2: //lw
       // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
-      processor->R[rd] =  (Word) bitExtender(
-        memory[processor->R[rs1] + offset], 32 
-      );
-      break;
+      processor->R[rd] =  (Word) memory[processor->R[rs1] + offset];
       break;
     default:
       handle_invalid_instruction(instruction);
@@ -351,19 +348,38 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
       memory[
         processor->R[rs1] + offset
       ] =  (Byte) (processor->R[rs2] & 0xFF);
+      // print_mem("SB",memory, processor, instruction);
       break;
     case 0x1: //sh
       //Mem(R[rs1] + offset)<- R[rs2][15:0]
       memory[
         processor->R[rs1] + offset
-      ] =  (Half) (processor->R[rs2] & 0xFFFF);
-      break;
+      ] =  (Byte) ((processor->R[rs2] & 0xFF00) >> 1);
+
+      memory[
+        processor->R[rs1] + offset + 1
+      ] =  (Byte) (processor->R[rs2] & 0xFF);
+      // print_mem("SH", memory, processor, instruction);
       break;
     case 0x2: //sw
       //Mem(R[rs1] + offset)<- R[rs2]
+       memory[
+        processor->R[rs1] + offset + 3
+      ] =  (Byte) ((processor->R[rs2] & 0xFF000000) >> 0x18);
+
       memory[
+        processor->R[rs1] + offset + 2
+      ] =  (Byte) ((processor->R[rs2] & 0xFF0000) >> 0x10);
+
+       memory[
+        processor->R[rs1] + offset + 1
+      ] =  (Byte) ((processor->R[rs2] & 0xFF00) >> 0x8);
+
+       memory[
         processor->R[rs1] + offset
-      ] =  (Word) (processor->R[rs2] & 0xFFFFFFFF);
+      ] =  (Byte) (processor->R[rs2] & 0xFF);
+
+      // print_mem("SW", memory, processor, instruction);
       break;
     default:
       handle_invalid_instruction(instruction);
