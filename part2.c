@@ -22,34 +22,34 @@ void execute_instruction(Instruction instruction,Processor *processor,Byte *memo
   int opcode = instruction.opcode;
   switch(opcode) { // What do we switch on?
     case 0x33:
-      execute_rtype(instruction, &processor);
+      execute_rtype(instruction, processor);
       break;
     case 0x13:
-      execute_itype_except_load(instruction, &processor);
+      execute_itype_except_load(instruction, processor);
       break;
     case 0x03:
-      execute_load(instruction, &processor, &memory);
+      execute_load(instruction, processor, memory);
       break;
     case 0x73:
-      execute_ecall(&processor, &memory);
+      execute_ecall(processor, memory);
       break;
     case 0x63:
-      execute_branch(instruction, &processor);
+      execute_branch(instruction, processor);
       break;
     case 0x37:
-      execute_lui(instruction, &processor);
+      execute_lui(instruction, processor);
       break;
     case 0x6F:
-      execute_jal(instruction, &processor);
+      execute_jal(instruction, processor);
       break;
     case 0x23:
-      execute_store(instruction, &processor, &memory);
+      execute_store(instruction, processor, memory);
       break;
     case 0x17:
-      execute_auipc(instruction, &processor);
+      execute_auipc(instruction, processor);
       break;
     case 0x67:
-      execute_jalr(instruction, &processor);
+      execute_jalr(instruction, processor);
       break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
@@ -93,7 +93,7 @@ void execute_rtype(Instruction instruction, Processor *processor) {
               processor->R[rd] = processor->R[rs1] << processor->R[rs2];
               break;
             case 0x01: //mulh
-              processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) >> 0x20; //Descarto los primeros 32 bits;
+              processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) >> 0x1F; //Descarto los primeros 32 bits;
               //R[rd]<-(R[rs1] * R[rs2]) [63:32]
               break;
         }
