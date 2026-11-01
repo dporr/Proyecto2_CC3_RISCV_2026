@@ -108,7 +108,6 @@ void write_rtype(Instruction instruction) {
             instruction.rtype.rs1,
             instruction.rtype.rs2
         );
-                    printf("\n");
             break;
         case 0x20:
             // printf("Aca imprimo\n");
@@ -117,7 +116,6 @@ void write_rtype(Instruction instruction) {
             instruction.rtype.rs1,
             instruction.rtype.rs2
         );
-            printf("\n");
             break;
         //Termini swithc nesteado para Rtype
        
