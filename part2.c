@@ -184,8 +184,88 @@ void execute_rtype(Instruction instruction, Processor *processor) {
 
 
 void execute_itype_except_load(Instruction instruction, Processor *processor) {
-  exit(1);
-  //TBD
+  int func3 = instruction.itype.funct3;
+  int rd = instruction.itype.rd;
+  int rs1 = instruction.itype.rs1;
+  int imm = instruction.itype.imm;
+  switch(func3) { // What do we switch on?
+    case 0x0: //addi
+      //R[rd]<- R[rs1] + imm 
+      processor->R[rd] = processor->R[rs1] + imm;
+      break;
+    case 0x07:
+      printf(ITYPE_FORMAT,
+      "andi",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      bitExtender(instruction.itype.imm,12)
+      );
+      break;
+    case 0x06:
+      printf(ITYPE_FORMAT,
+      "ori",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      bitExtender(instruction.itype.imm, 12)
+      );
+      break;
+    case 0x02:
+      printf(ITYPE_FORMAT,
+      "slti",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      bitExtender(instruction.itype.imm, 12)
+      );
+      break;
+      case 0x01:
+      printf(ITYPE_FORMAT,
+      "slli",
+      instruction.itype.rd,
+      instruction.itype.rs1,
+      instruction.itype.imm
+      );
+      break;
+      case 0x4:
+      printf(ITYPE_FORMAT,
+        "xori",
+        instruction.itype.rd,
+        instruction.itype.rs1,
+        bitExtender(instruction.itype.imm, 12)
+        );
+        break;
+      case 0x5:
+        int imm = instruction.itype.imm;
+        imm >>= 5;
+        imm &= 0x7F; //Mascara 0111 1111
+        switch (imm)
+        {
+        case 0x00:
+          printf(ITYPE_FORMAT,
+          "srli",
+          instruction.itype.rd,
+          instruction.itype.rs1,
+          // bitExtender(instruction.itype.imm & 0x1F, 5) //mascara 0001_1111
+          //Sin sing extension
+          instruction.itype.imm & 0x1F
+          );
+          break;
+        case 0x20:
+          printf(ITYPE_FORMAT,
+          "srai",
+          instruction.itype.rd,
+          instruction.itype.rs1,
+          instruction.itype.imm & 0x1F
+          );
+          break;
+        default:
+          handle_invalid_instruction(instruction);
+          break;
+        }
+      break;
+    default:
+      handle_invalid_instruction(instruction);
+      break;
+  }
 }
 
 
@@ -204,9 +284,14 @@ void execute_branch(Instruction instruction, Processor *processor) {
   /* Remember that the immediate portion of branches
      is counting half-words, so make sure to account for that. */
   int func3 = instruction.btype.funct3;
+  int rs1 = instruction.btype.rs1;
+  int rs2 = instruction.btype.rs2;
   switch(func3) { // What do we switch on?
     case 0x0:
       //if(R[rs1] == R[rs2]) PC<- PC + {offset, 1b'0}
+      printf("%.8x Branching to %d ", instruction.bits, get_branch_distance(instruction));
+      decode_instruction(instruction);
+      if(processor->R[rs1] == processor->R[rs2]) processor->PC = processor->PC +  get_branch_distance(instruction);
     break;
     default:
       handle_invalid_instruction(instruction);
@@ -289,5 +374,4 @@ Word load(Byte *memory, Address address, Alignment alignment, int check_align) {
   //PC ya me lo mandan en risc.v en esta linea   instruction.bits = load(memory, processor->PC, LENGTH_WORD, 1);
   // printf("Contents of memory 0x%.8x at  address 0x%.8x\n", memory[address], address);
   // exit(0);
-  return memory[address];
-}
+return memory[address] | (memory[address+1] << 0x8) | (memory[address+2] << 0x10) | (memory[address+3] << 0x18);}
