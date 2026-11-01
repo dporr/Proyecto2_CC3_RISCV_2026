@@ -274,6 +274,35 @@ void write_itype_except_load(Instruction instruction) {
         instruction.itype.imm
         );
         break;
+      case 0x5:
+        int imm = instruction.itype.imm;
+        imm >>= 5;
+        imm &= 0x7F; //Mascara 0111 1111
+        switch (imm)
+        {
+        case 0x00:
+          printf(ITYPE_FORMAT,
+          "srli",
+          instruction.itype.rd,
+          instruction.itype.rs1,
+          // bitExtender(instruction.itype.imm & 0x1F, 5) //mascara 0001_1111
+          //Sin sing extension
+          instruction.itype.imm & 0x1F
+          );
+          break;
+        case 0x20:
+          printf(ITYPE_FORMAT,
+          "srai",
+          instruction.itype.rd,
+          instruction.itype.rs1,
+          instruction.itype.imm & 0x1F
+          );
+          break;
+        default:
+          handle_invalid_instruction(instruction);
+          break;
+        }
+      break;
     default:
       handle_invalid_instruction(instruction);
       break;

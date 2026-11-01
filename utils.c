@@ -11,6 +11,10 @@ int bitExtender(unsigned int field, unsigned int size) {
   u_int32_t mask = 0x800; // 1000_0000_0000, por alguna razon el binario no funciona...
   int imm = 0;
   switch(size){
+    case 5:
+      mask = 0x10;//mascara 1_0000 0x10
+      imm = (int32_t)(field ^ mask) - mask;
+      break;
     case 12:
       imm = (int32_t)(field ^ mask) - mask;
       break;
