@@ -315,19 +315,32 @@ void execute_load(Instruction instruction, Processor *processor, Byte *memory) {
   switch(func3) { // What do we switch on?
     case 0x0: //lb
       // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
-      processor->R[rd] =  (Byte) bitExtender(
+      processor->R[rd] =  bitExtender(
         memory[processor->R[rs1] + offset], 8 
       );
       break;
     case 0x1: //lh
-      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
-      processor->R[rd] =  (Half) bitExtender(
-        memory[processor->R[rs1] + offset], 16 
+      // R[rd]<- SignExt(Mem(R[rs1] + offset, half)) 
+      processor->R[rd] =  bitExtender(
+        (memory[processor->R[rs1] + offset + 1] << 0x8) |
+         memory[processor->R[rs1] + offset], 16 
       );
+
       break;
     case 0x2: //lw
-      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) 
-      processor->R[rd] =  (Word) memory[processor->R[rs1] + offset];
+      // R[rd]<- SignExt(Mem(R[rs1] + offset, byte)) ]
+      // print_mem("lw", memory, processor, instruction);
+      processor->R[rd] = 
+       memory[processor->R[rs1] + offset +3 ]<< 0x18;
+
+      processor->R[rd] |= 
+        memory[processor->R[rs1] + offset+2] << 0x10;
+
+      processor->R[rd] |= 
+        memory[processor->R[rs1] + offset+1] << 0x08;
+
+      processor->R[rd] |= 
+        memory[processor->R[rs1] + offset]  << 0x00;
       break;
     default:
       handle_invalid_instruction(instruction);
@@ -348,18 +361,18 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
       memory[
         processor->R[rs1] + offset
       ] =  (Byte) (processor->R[rs2] & 0xFF);
-      print_mem("SB",memory, processor, instruction);
+      // print_mem("SB",memory, processor, instruction);
       break;
     case 0x1: //sh
       //Mem(R[rs1] + offset)<- R[rs2][15:0]
       memory[
-        processor->R[rs1] + offset 
+        processor->R[rs1] + offset + 1
       ] =  (Byte) ((processor->R[rs2] & 0xFF00) >> 0x8);
 
       memory[
-        processor->R[rs1] + offset + 1
+        processor->R[rs1] + offset
       ] =  (Byte) (processor->R[rs2] & 0xFF);
-      print_mem("SH", memory, processor, instruction);
+      // print_mem("SH", memory, processor, instruction);
       break;
     case 0x2: //sw
       //Mem(R[rs1] + offset)<- R[rs2]
@@ -379,7 +392,7 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
         processor->R[rs1] + offset
       ] =  (Byte) (processor->R[rs2] & 0xFF);
 
-      print_mem("SW", memory, processor, instruction);
+      // print_mem("SW", memory, processor, instruction);
       break;
     default:
       handle_invalid_instruction(instruction);

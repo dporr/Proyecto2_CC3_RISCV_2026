@@ -76,6 +76,10 @@ int get_jump_distance(Instruction instruction) {
         lower &= 0x1F; //mascara 0001 1111 0x1F
         return bitExtender(upper|lower, 12);
         break;
+      case 0x03:
+        //Loads son I-type, el offset es el imm de 12 bits
+        return bitExtender(instruction.itype.imm, 12);
+        break;
       case 0x63:
         int result = 0; //r_X para indicar posiciones dentro de r, que es el offset calculado
         //imm[12|10:5] imm[4:1|11] opcode B-type
