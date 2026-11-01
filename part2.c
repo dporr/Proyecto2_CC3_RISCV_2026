@@ -149,12 +149,9 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         break;
     case 0x6: //or, rem
         switch(func7) {
-            case 0x0:
-                printf(RTYPE_FORMAT, "or",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                );
+            case 0x0: //or
+                //R[rd]<-R[rs1] | R[rs2]
+                processor->R[rd] = (processor->R[rs1] | processor->R[rs2]);
                 break;
             case 0x01:
                 printf(RTYPE_FORMAT, "rem",
@@ -238,13 +235,10 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
           instruction.itype.imm & 0x1F
           );
           break;
-        case 0x20:
-          printf(ITYPE_FORMAT,
-          "srai",
-          instruction.itype.rd,
-          instruction.itype.rs1,
-          instruction.itype.imm & 0x1F
-          );
+        case 0x20: //srai
+          //R[rd]<- R[rs1] >> imm 
+          processor->R[rd] = ((sWord) processor->R[rs1] >>  (instruction.itype.imm & 0x1F));
+          //BUG: Por que imm viene corrupto aca? 
           break;
         default:
           handle_invalid_instruction(instruction);
@@ -430,8 +424,9 @@ void execute_lui(Instruction instruction, Processor *processor) {
   //R[rd]<- {offset, 12b'0} 
   //rd = imm << 12
   int rd = instruction.utype.rd;
-  int imm = instruction.utype.imm;
+  unsigned  imm = instruction.utype.imm;
   processor->R[rd] = imm << 12;
+  // printf("I lui'd %.8x\n", processor->R[rd]);
 }
 
 
