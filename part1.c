@@ -63,6 +63,13 @@ void decode_instruction(Instruction instruction) {
     case 0x17:
       write_auipc(instruction);
       break;
+    case 0x67:
+      printf(JALR_FORMAT,
+        instruction.itype.rd,
+        instruction.itype.rs1,
+        bitExtender(instruction.itype.imm, 12)
+      );
+      break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
       break;
