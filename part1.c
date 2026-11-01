@@ -284,6 +284,22 @@ void write_itype_except_load(Instruction instruction) {
 void write_load(Instruction instruction) {
   int func3 = instruction.itype.funct3;
   switch(func3) { // What do we switch on?
+    case 0x0:
+      printf(MEM_FORMAT,
+      "lb",
+      instruction.itype.rd,
+      bitExtender(instruction.itype.imm, 12),
+      instruction.itype.rs1
+      );
+      break;
+    case 0x01:
+      printf(MEM_FORMAT,
+        "lh",
+      instruction.itype.rd,
+      bitExtender(instruction.itype.imm, 12),
+      instruction.itype.rs1
+      );
+      break;
     case 0x2:
       printf(MEM_FORMAT,
       "lw",
