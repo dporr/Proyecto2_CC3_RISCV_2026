@@ -2,6 +2,7 @@ SOURCES := utils.c part1.c part2.c riscv.c
 HEADERS := types.h utils.h riscv.h
 
 ASM_TESTS := simple multiply random
+ASM_TESTS := simple multiply random add and auipc bne ecall jalr lh lw mulh ori sb sll slt sra srl sub xor addi andi beq div jal lb lui mul or rem sh slli slti srai srli sw xori
 
 all: riscv part1 part2
 	@echo "============All tests finished============"
