@@ -60,6 +60,9 @@ void decode_instruction(Instruction instruction) {
     case 0x23:
       write_store(instruction);
       break;
+    case 0x17:
+      write_auipc(instruction);
+      break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
       break;
@@ -411,7 +414,11 @@ void write_branch(Instruction instruction) {
 /* For the writes, probably a good idea to take a look at utils.h */
 
 void write_auipc(Instruction instruction) {
-  /* YOUR CODE HERE */
+  printf(
+    AUIPC_FORMAT,
+    instruction.utype.rd,
+    instruction.utype.imm
+  );
 }
 
 
