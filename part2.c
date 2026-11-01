@@ -289,9 +289,15 @@ void execute_branch(Instruction instruction, Processor *processor) {
   switch(func3) { // What do we switch on?
     case 0x0:
       //if(R[rs1] == R[rs2]) PC<- PC + {offset, 1b'0}
-      printf("%.8x Branching to %d ", instruction.bits, get_branch_distance(instruction));
-      decode_instruction(instruction);
-      if(processor->R[rs1] == processor->R[rs2]) processor->PC = processor->PC +  get_branch_distance(instruction);
+      // printf("%.8x Branching to %d ", instruction.bits, get_memory_offset(instruction));
+      // decode_instruction(instruction);
+      if(processor->R[rs1] == processor->R[rs2]) processor->PC = processor->PC +  get_memory_offset(instruction) - 4;//Afuera siempre incremento PC, entonces compenso aca;
+    break;
+    case 0x01:
+    //if(R[rs1] != R[rs2]) PC<- PC + {offset, 1b'0}
+      // printf("%.8x Branching to %d ", instruction.bits, get_memory_offset(instruction));
+      // decode_instruction(instruction);
+      if(processor->R[rs1] != processor->R[rs2]) processor->PC = processor->PC +  get_memory_offset(instruction) - 4;//Afuera siempre incremento PC, entonces compenso aca;
     break;
     default:
       handle_invalid_instruction(instruction);
