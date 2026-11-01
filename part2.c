@@ -138,12 +138,9 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 instruction.rtype.rs2
                 );
                 break;
-            case 0x20:
-                printf(RTYPE_FORMAT, "sra",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                 );
+            case 0x20: //sra
+                //R[rd]<-R[rs1] >> R[rs2]
+                processor->R[rd] =  ((sWord)processor->R[rs1] >> processor->R[rs2]);
                 break;
         }
         break;
