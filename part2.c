@@ -269,7 +269,8 @@ void execute_ecall(Processor *p, Byte *memory) {
       printf("%d",arg1); 
       break;
     case 10: //ecall exit
-      exit(arg1);
+      printf("exiting the simulator\n");
+      exit(0);
       break;
     default: // undefined ecall
       printf("Illegal ecall number %d\n", ecall_n); // What stores the ecall arg?
@@ -374,7 +375,7 @@ void execute_store(Instruction instruction, Processor *processor, Byte *memory) 
 
 void execute_jalr(Instruction instruction, Processor *processor) {
     int rd = instruction.itype.rd;
-    int imm = instruction.itype.imm;
+    int imm = bitExtender(instruction.itype.imm, 12);
     int rs1 = instruction.itype.rs1;
     //1. R[rd]<- PC + 4
     processor->R[rd] = processor->PC + 4;
