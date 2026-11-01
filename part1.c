@@ -64,11 +64,7 @@ void decode_instruction(Instruction instruction) {
       write_auipc(instruction);
       break;
     case 0x67:
-      printf(JALR_FORMAT,
-        instruction.itype.rd,
-        instruction.itype.rs1,
-        bitExtender(instruction.itype.imm, 12)
-      );
+      write_jalr(instruction);
       break;
     default: // undefined opcode
       handle_invalid_instruction(instruction);
@@ -436,7 +432,11 @@ void write_lui(Instruction instruction) {
 
 
 void write_jalr(Instruction instruction) {
-  /* YOUR CODE HERE */
+  printf(JALR_FORMAT,
+    instruction.itype.rd,
+    instruction.itype.rs1,
+    bitExtender(instruction.itype.imm, 12)
+    );
 }
 
 
