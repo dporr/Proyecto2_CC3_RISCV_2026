@@ -153,13 +153,13 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 //R[rd]<-R[rs1] | R[rs2]
                 processor->R[rd] = (processor->R[rs1] | processor->R[rs2]);
                 break;
-            case 0x01:
-                printf(RTYPE_FORMAT, "rem",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                 );
-                break;
+            case 0x01: //rem
+              //R[rd]<-R[rs1] % R[rs2]
+              processor->R[rd] = ((int)processor->R[rs1] %  (int)processor->R[rs2]);
+              // printf("RS1: %.8x RS2: %.8x intended %.8x\n",
+              // processor->R[rs1],processor->R[rs2],
+              // processor->R[rs1] % processor->R[rs2]);
+              break;
         }
         break;
     case 0x7: //and
