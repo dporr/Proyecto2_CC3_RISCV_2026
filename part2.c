@@ -389,8 +389,11 @@ void execute_jalr(Instruction instruction, Processor *processor) {
 
 
 void execute_jal(Instruction instruction, Processor *processor) {
-    handle_invalid_instruction(instruction);
-    printf("Not impl jal\n");
+    int rd = instruction.utype.rd;
+    //1.//R[rd]<- PC + 4
+    processor->R[rd] = processor->PC + 4;
+    //2. PC<- PC + {imm, 1b'0}
+    processor->PC =  processor->PC + get_jump_distance(instruction) - 4;;
 }
 
 
