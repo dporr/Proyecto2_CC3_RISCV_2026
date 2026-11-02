@@ -7,7 +7,7 @@ grading/part1.c
 grading/part2.c
 grading/utils.c
 #Git ingore .github/workflows/classroom.yml
-.github/workflows/classroom.yml
+**/**/classroom.yml
 # Project files
 riscv
 riscvcode/out
