@@ -6,7 +6,8 @@ grading/__pycache__
 grading/part1.c
 grading/part2.c
 grading/utils.c
-
+#Git ingore .github/workflows/classroom.yml
+.github/workflows/classroom.ym
 # Project files
 riscv
 riscvcode/out
