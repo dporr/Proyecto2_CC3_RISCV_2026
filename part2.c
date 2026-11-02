@@ -208,13 +208,9 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
       instruction.itype.imm
       );
       break;
-      case 0x4:
-      printf(ITYPE_FORMAT,
-        "xori",
-        instruction.itype.rd,
-        instruction.itype.rs1,
-        bitExtender(instruction.itype.imm, 12)
-        );
+      case 0x4: //xori
+        //R[rd]<- R[rs1] ^ imm 
+        processor->R[rd] = (processor->R[rs1] ^ imm);
         break;
       case 0x5:
         int imm = instruction.itype.imm;
