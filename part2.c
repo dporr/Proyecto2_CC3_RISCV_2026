@@ -195,13 +195,9 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
         (sWord)processor->R[rs1] <  imm
       )? 1:0;
       break;
-      case 0x01:
-      printf(ITYPE_FORMAT,
-      "slli",
-      instruction.itype.rd,
-      instruction.itype.rs1,
-      instruction.itype.imm
-      );
+      case 0x01: //slli
+      // R[rd]<- R[rs1] << imm 
+      processor->R[rd] = processor->R[rs1] << imm;
       break;
       case 0x4: //xori
         //R[rd]<- R[rs1] ^ imm 
