@@ -118,11 +118,11 @@ void execute_rtype(Instruction instruction, Processor *processor) {
     //     break;
     case 0x4: //xor, div
         switch(func7) {
-            case 0x0:
+            case 0x0: //xor
                 // R[rd]<-R[rs1] ^ R[rs2]
                 processor->R[rd] = (processor->R[rs1] ^ processor->R[rs2]);
                 break;
-            case 0x01:
+            case 0x01: //div
                 //R[rd]<-R[rs1] / R[rs2]
                 if(processor->R[rs2] == 0) handle_invalid_instruction(instruction); //No dividimos por cero
                 processor->R[rd] = processor->R[rs1] / processor->R[rs2];
