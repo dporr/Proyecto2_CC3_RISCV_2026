@@ -188,13 +188,12 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
       //R[rd]<- R[rs1] | imm 
       processor->R[rd] = (processor->R[rs1] | bitExtender(instruction.itype.imm, 12));
       break;
-    case 0x02:
-      printf(ITYPE_FORMAT,
-      "slti",
-      instruction.itype.rd,
-      instruction.itype.rs1,
-      bitExtender(instruction.itype.imm, 12)
-      );
+    case 0x02: //slti
+      //R[rd]<- (R[rs1] < imm) ? 1 : 0
+      //condition ? expression_if_true : expression_if_false;
+      processor->R[rd] = (
+        (sWord)processor->R[rs1] <  imm
+      )? 1:0;
       break;
       case 0x01:
       printf(ITYPE_FORMAT,
