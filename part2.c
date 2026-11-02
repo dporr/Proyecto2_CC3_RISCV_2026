@@ -101,7 +101,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
               processor->R[rd] = processor->R[rs1] << processor->R[rs2];
               break;
             case 0x01: //mulh
-              processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) >> 0x1F; //Descarto los primeros 32 bits;
+              long intermedio = (long) processor->R[rs1] * (long)processor->R[rs2]; //Descarto los primeros 32 bits;
+              processor->R[rd] = (intermedio>>0x20);
               //R[rd]<-(R[rs1] * R[rs2]) [63:32]
               break;
         }
