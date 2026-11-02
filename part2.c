@@ -382,10 +382,11 @@ void execute_jalr(Instruction instruction, Processor *processor) {
     int rd = instruction.itype.rd;
     int imm = bitExtender(instruction.itype.imm, 12);
     int rs1 = instruction.itype.rs1;
+    int target = (processor->R[rs1] + imm) & ~1;
     //1. R[rd]<- PC + 4
     processor->R[rd] = processor->PC + 4;
     //2. PC<- R[rs1] + imm
-    processor->PC = processor->R[rs1] + imm;
+    processor->PC = target - 4;
 
 }
 
