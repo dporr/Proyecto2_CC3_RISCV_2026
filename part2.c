@@ -81,7 +81,8 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         case 0x01: //mul
             //R[rd]<-(R[rs1] * R[rs2]) [31:0]
             processor->R[rd] = (processor->R[rs1] * processor->R[rs2]); // Potencial BUG: hay que hacer bit extension?
-        case 0x20: //sub
+            break;
+            case 0x20: //sub
             //R[rd]<-R[rs1] - R[rs2]
             processor->R[rd] = processor->R[rs1] - processor->R[rs2];
             break;
