@@ -134,6 +134,11 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                   processor->R[rd] = 0xFFFFFFFF; //Caso especial 1
                   break;
                 }
+                //caso especial 2
+                if (processor->R[rs1] == 0x80000000 && processor->R[rs2] == 0xFFFFFFFF) {
+                processor->R[rd] = 0x80000000; 
+                break;
+              }
                 processor->R[rd] = (sWord)processor->R[rs1] /  (sWord) processor->R[rs2];
                 break;
         }
