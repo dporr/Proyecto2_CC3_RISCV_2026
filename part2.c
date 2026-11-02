@@ -124,9 +124,17 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 processor->R[rd] = (processor->R[rs1] ^ processor->R[rs2]);
                 break;
             case 0x01: //div
+                /**BUG:
+                 * Division by Zero: Yields 0xFFFFFFFF (all bits set to 1)
+                 *  for 32-bit division without raising a hardware exception.
+                 * Overflow: Occurs when dividing the most negative number by -1 (e.g., INT_MIN / -1),
+                 * which results in INT_MIN **/
                 //R[rd]<-R[rs1] / R[rs2]
-                if(processor->R[rs2] == 0) handle_invalid_instruction(instruction); //No dividimos por cero
-                processor->R[rd] = (sWord)processor->R[rs1] / processor->R[rs2];
+                if(processor->R[rs2] == 0){
+                  processor->R[rd] = 0xFFFFFFFF; //Caso especial 1
+                  break;
+                }
+                processor->R[rd] = (sWord)processor->R[rs1] /  (sWord) processor->R[rs2];
                 break;
         }
         break;
