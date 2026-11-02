@@ -108,11 +108,10 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         }
         break;
     case 0x2: //slt
-        printf(RTYPE_FORMAT, "slt",
-            instruction.rtype.rd,
-            instruction.rtype.rs1,
-            instruction.rtype.rs2
-            );
+        //R[rd]<-(R[rs1] < R[rs2]) ? 1 : 0
+        processor->R[rd] = (
+        (sWord)processor->R[rs1] < (sWord) processor->R[rs2]
+      )? 1:0;
         break;
     // case 0x3: 
     //     //Creo que este  func3 no existe.
