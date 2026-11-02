@@ -80,7 +80,7 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         break;
         case 0x01: //mul
             //R[rd]<-(R[rs1] * R[rs2]) [31:0]
-            processor->R[rd] = (processor->R[rs1] * processor->R[rs2]) & 0xFFFFFFFF; // Potencial BUG: hay que hacer bit extension?
+            processor->R[rd] = (processor->R[rs1] * processor->R[rs2]); // Potencial BUG: hay que hacer bit extension?
         case 0x20: //sub
             //R[rd]<-R[rs1] - R[rs2]
             processor->R[rd] = processor->R[rs1] - processor->R[rs2];
@@ -184,13 +184,9 @@ void execute_itype_except_load(Instruction instruction, Processor *processor) {
     //R[rd]<- R[rs1] & imm
       processor->R[rd] = processor->R[rs1] & imm;
       break;
-    case 0x06:
-      printf(ITYPE_FORMAT,
-      "ori",
-      instruction.itype.rd,
-      instruction.itype.rs1,
-      bitExtender(instruction.itype.imm, 12)
-      );
+    case 0x06: //ori
+      //R[rd]<- R[rs1] | imm 
+      processor->R[rd] = (processor->R[rs1] | bitExtender(instruction.itype.imm, 12));
       break;
     case 0x02:
       printf(ITYPE_FORMAT,
