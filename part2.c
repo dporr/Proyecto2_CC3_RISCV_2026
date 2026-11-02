@@ -141,12 +141,10 @@ void execute_rtype(Instruction instruction, Processor *processor) {
         break;
     case 0x5: //srl, sra
         switch(func7) {
-            case 0x0:
-                printf(RTYPE_FORMAT, "srl",
-                instruction.rtype.rd,
-                instruction.rtype.rs1,
-                instruction.rtype.rs2
-                );
+            case 0x0: //srl
+                //R[rd]<-R[rs1] >> R[rs2]
+                processor->R[rd] = 
+                (processor->R[rs1] >> processor->R[rs2]);
                 break;
             case 0x20: //sra
                 //R[rd]<-R[rs1] >> R[rs2]
