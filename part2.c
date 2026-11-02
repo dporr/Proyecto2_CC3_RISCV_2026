@@ -159,10 +159,16 @@ void execute_rtype(Instruction instruction, Processor *processor) {
                 break;
             case 0x01: //rem
               //R[rd]<-R[rs1] % R[rs2]
-              processor->R[rd] = ((int)processor->R[rs1] %  (int)processor->R[rs2]);
-              // printf("RS1: %.8x RS2: %.8x intended %.8x\n",
-              // processor->R[rs1],processor->R[rs2],
-              // processor->R[rs1] % processor->R[rs2]);
+              if (processor->R[rs2] == 0) {
+                processor->R[rd] = processor->R[rs1]; //Caso especial 1: divisor 0 -> dividendo
+                break;
+              }
+              if (processor->R[rs1] == 0x80000000 && processor->R[rs2] == 0xFFFFFFFF) {
+                processor->R[rd] = 0; //Caso especial 2: INT_MIN % -1 -> 0
+                break;
+              }
+              processor->R[rd] = (sWord)processor->R[rs1] % (sWord)processor->R[rs2];
+              break;
               break;
         }
         break;
